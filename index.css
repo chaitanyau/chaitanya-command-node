@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------
+    CORE & VARIABLE DEFINITIONS
+---------------------------------------------- */
+
+:root {
+  /* --- HEADER SIZING --- */
+  --header-height-desktop: 90px; /* <-- CHANGE DESKTOP HEIGHT HERE */
+  --header-height-mobile: 80px;   /* <-- CHANGE MOBILE HEIGHT HERE */
+
+  /* Set the default header height to the desktop value */
+  --header-height: var(--header-height-desktop);
+  
+  /* --- FLUID TYPOGRAPHY (existing variables) --- */
+  --font-size-base: clamp(1rem, 0.91rem + 0.43vw, 1.25rem);
+  --font-size-lg: clamp(1.25rem, 1.08rem + 0.87vw, 1.75rem);
+  --font-size-xl: clamp(1.56rem, 1.22rem + 1.74vw, 2.63rem);
+  --font-size-xxl: clamp(2.44rem, 1.39rem + 5.26vw, 5.63rem);
+
+  /* --- FLUID SPACING (existing variables) --- */
+  --space-m: clamp(1.25rem, 1.08rem + 0.87vw, 1.75rem);
+  --space-xl: clamp(3.13rem, 2.26rem + 4.35vw, 5.63rem);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+main {
+  padding-top: var(--header-height);
+  /* NEW: Added a transition to animate the scaling effect smoothly */
+  transition: transform 0.3s ease-in-out;
+}
+
+
+
+body {
+  /*
+    MODIFIED: Added padding-top to prevent content from hiding under the fixed header.
+    It uses the CSS variable defined above.
+  */
+  padding-top: var(--header-height);
+
+  /* MODIFIED: The 'cursor: none' rule was moved into a media query below. */
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv01", "zero";
+  position: relative; 
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+#hud-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------
+    HEADER & SCROLLING FIXES
+---------------------------------------------- */
+
+/* 
+  NEW: Create a class for your scroll-to sections.
+  Add this 'section' class to your components (About, Projects, etc.).
+  This fixes the scroll-to-position issue by accounting for the header's height.
+*/
+.section {
+  scroll-margin-top: var(--header-height);
+}
+
+/* 
+  NEW: Media query for landscape orientation on mobile.
+  This reduces the header height and updates the padding/margins accordingly.
+*/
+@media (orientation: landscape) and (max-height: 500px) {
+  body {
+    padding-top: var(--header-height-landscape);
+  }
+  .section {
+    scroll-margin-top: var(--header-height-landscape);
+  }
+  /* 
+    IMPORTANT: You must also set the new height on your actual Header component.
+    Replace '.your-header-class-name' with the class from your Header.tsx file.
+  */
+  .your-header-class-name {
+    height: var(--header-height-landscape);
+  }
+}
+
+/* ---------------------------------------------
+    BACKGROUND EFFECTS (GRID, TEXT, VIGNETTE)
+---------------------------------------------- */
+
+#hud-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(to right, rgba(5, 24, 37, 0.726) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 200, 255, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+}
+
+/* ---------------------------------------------
+    Font Glows & Brightness (UNCHANGED)
+---------------------------------------------- */
+p, li, span, a { text-shadow: 0 0 3px rgba(220, 235, 255, 0.4); }
+h2, h3, h4 { text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+.text-glow-cyan {
+  color: #68faff;
+  text-shadow:
+    0 0 10px rgba(104, 250, 255, 0.9), 0 0 10px rgba(104, 250, 255, 0.8),
+    0 0 20px rgba(104, 250, 255, 0.6), 0 0 40px rgba(45, 217, 255, 0.4),
+    0 0 60px rgba(45, 217, 255, 0.2);
+}
+
+/* ---------------------------------------------
+    Section Headline Markers (UNCHANGED)
+---------------------------------------------- */
+.section-marker::before {
+  content: '>>';
+  margin-right: 0.75rem;
+  color: #fa0101;
+  font-weight: bold;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px rgba(250, 1, 1, 0.7);
+}
+
+/* ---------------------------------------------
+    UI & UX Enhancements
+---------------------------------------------- */
+
+/* 
+  MODIFIED: Custom cursor styles are now only applied on devices
+  with fine pointer control (like a mouse), preventing them on touch screens.
+*/
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+}
+
+/* 
+  This rule ensures that on touch devices (or if the custom cursor is disabled),
+  clickable items still show the default pointer, which is good practice.
+*/
+@media (pointer: coarse), (pointer: none) {
+  a, button, [role="button"] { 
+    cursor: pointer; 
+  }
+}
+.header-container {
+  height: var(--header-height);
+  transition: height 0.3s ease-in-out; /* Adds a smooth resize effect */
+}
+
+
+/* --- And update the media query --- */
+@media (orientation: landscape) and (max-height: 500px) {
+  main {
+    padding-top: var(--header-height-landscape);
+
+    /* 
+      ACTION: Scale the entire main content down to 80% of its size.
+      Adjust the 0.8 value (e.g., to 0.75 or 0.85) to your liking.
+    */
+    transform: scale(0.8);
+
+    /*
+      IMPORTANT: By default, scaling happens from the center.
+      We need to change the origin to the top so it scales down 
+      from the header, not from the middle of the page.
+    */
+    transform-origin: top center;
+  }
+
+  /*
+    FIX FOR WHITE SPACE: Scaling down leaves a gap at the bottom.
+    This pulls the content that comes *after* the main section up.
+    If you have a footer, this will prevent a large empty space above it.
+    The -20vh value is a starting point; you may need to adjust it.
+    It corresponds to the 20% we scaled down.
+  */
+  main + * {
+    margin-top: -20vh; /* Adjust this value as needed */
+  }
+
+  .section {
+    scroll-margin-top: var(--header-height-landscape);
+  }
+
+  .header-container {
+    height: var(--header-height-landscape);
+  }
+}
+.gpu-layer {
+  will-change: transform, opacity;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-height: var(--header-height-mobile);
+  }
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0d1117; }
+::-webkit-scrollbar-thumb { background: #2a6581; border-radius: 10px; border: 2px solid #0d1117; }
+::-webkit-scrollbar-thumb:hover { background: #68faff; }

@@ -1,0 +1,102 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// UPDATED: Changed 'label' back to 'name' to match  likely data structure.
+interface HeaderProps {
+  links: { name: string; href: string }[];
+}
+
+export const Header: React.FC<HeaderProps> = ({ links }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // NEW: A robust, correctly typed click handler for smooth scrolling.
+  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // 1. Prevent the browser's default "jump" behavior.
+    event.preventDefault();
+
+    // 2. Get the target element's ID from the href (e.g., "#about" -> "about").
+    const targetId = href.substring(1);
+    const targetElement = document.getElementById(targetId);
+
+    // 3. If the element exists, scroll to it smoothly.
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start', // Aligns the top of the section with the top of the viewport.
+      });
+    }
+  };
+
+  return (
+    <header className="fixed top-0 left-0 w-full z-40 p-4">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 rounded-xl bg-brand-bg/70 backdrop-blur-md border border-brand-border shadow-sm">
+        <a
+          href="#home"
+          // UPDATED: Added the onClick handler.
+          onClick={(e) => handleLinkClick(e, '#home')}
+          className="text-lg sm:text-xl font-orbitron font-bold tracking-wide text-brand-primary"
+        >
+          C<span className="text-brand-light">/</span>R
+        </a>
+
+        {/* --- Desktop Navigation --- */}
+        <nav className="hidden md:flex gap-6 items-center">
+          {links.map((link) => (
+            <a
+              key={link.name} // UPDATED: Using link.name
+              href={link.href}
+              onClick={(e) => handleLinkClick(e, link.href)}
+              // UPDATED: Added CSS classes for hover effects.
+              className="inline-block text-sm font-sans tracking-wider text-brand-secondary hover:text-glow-cyan hover:scale-110 transition-all duration-300 ease-in-out"
+            >
+              <span className="text-brand-primary">/</span>
+              {link.name.toLowerCase()} {/* UPDATED: Using link.name */}
+            </a>
+          ))}
+        </nav>
+
+        {/* --- Mobile Toggle --- */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-brand-primary"
+            aria-label="Toggle Navigation"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16m-7 6h7'} />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* --- Mobile Menu --- */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden mt-2 mx-4 rounded-xl bg-brand-bg/90 backdrop-blur-md border border-brand-border p-4 shadow-md"
+          >
+            <nav className="flex flex-col items-center gap-4">
+              {links.map((link) => (
+                <a
+                  key={link.name} // UPDATED: Using link.name
+                  href={link.href}
+                  // UPDATED: Combined smooth scroll and closing the menu in the onClick handler.
+                  onClick={(e) => {
+                    handleLinkClick(e, link.href);
+                    setIsOpen(false);
+                  }}
+                  className="inline-block text-base font-sans text-brand-light hover:text-glow-cyan hover:scale-110 transition-all duration-300 ease-in-out py-2"
+                >
+                  /{link.name.toLowerCase()} {/* UPDATED: Using link.name */}
+                </a>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+};

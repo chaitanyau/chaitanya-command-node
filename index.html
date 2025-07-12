@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chaitanya's Command Node</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS via CDN (for static hosting) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+  href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@300;400;600&display=swap"
+  rel="stylesheet"
+/>
+
+    <!-- Tailwind Theme Config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              orbitron: ['Orbitron', 'sans-serif'],
+              'source-code': ['Source Code Pro', 'monospace'],
+            },
+            colors: {
+              'brand-dark': '#010409',
+              'brand-bg': '#0D1117',
+              'brand-light': '#E6EDF3',
+              'brand-primary': '#2F81F7',
+              'brand-secondary': '#8B949E',
+              'brand-accent': '#F77814',
+              'brand-border': 'rgba(230, 237, 243, 0.1)',
+            },
+            animation: {
+              'text-glow': 'text-glow 1.5s ease-in-out infinite alternate',
+            },
+            keyframes: {
+              'text-glow': {
+                '0%': { textShadow: '0 0 4px #2F81F7, 0 0 8px #2F81F7' },
+                '100%': { textShadow: '0 0 8px #2F81F7, 0 0 16px #2F81F7' },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/index.css" />
+
+    <!-- Module Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom": "https://esm.sh/react-dom@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+          "framer-motion": "https://esm.sh/framer-motion@11.0.0",
+          "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.0",
+          "@react-three/drei": "https://esm.sh/@react-three/drei@9.96.0",
+          "three": "https://esm.sh/three@0.159.0",
+          "@google/genai": "https://esm.sh/@google/genai"
+        }
+      }
+    </script>
+  </head>
+
+  <body class="antialiased text-brand-light bg-brand-dark">
+    <!-- THIS IS THE NEW LINE -->
+    <div id="hud-background"></div>
+
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    
+  </body>
+</html>
